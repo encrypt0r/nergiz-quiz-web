@@ -1,7 +1,7 @@
     </div>
     <footer class="footer">
       <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
+        <p class="text-muted">Made with <span class="glyphicon glyphicon-heart red"></span> ... and <code>code</code> in Kurdistan</p>
       </div>
     </footer>
 
