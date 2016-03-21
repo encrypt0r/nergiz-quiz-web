@@ -6,40 +6,20 @@
         extract($data);
         require($part . ".php");
     }
-    
-    function GetTopTen()
-    {
-        $people = GetLeaderBoard();
-        if ($result->num_rows > 0)
-        {
-        echo "<table class='table'>";
-        echo "<tr>";
-        echo "<td>num</td><td>ID</td><td>Name</td><td>Age</td>";
-        echo "</tr>";
-        // output data for each row
-        $limit = 0;
-        while($row = $people>fetch_assoc())
-        {
-            echo "<tr>";
-            echo "<td>" . ($limit + 1) . "</td>";
-            echo "<td>" . $row["id"] . "</td>";
-            echo "<td>" . $row["firstName"] . " " . $row["lastName"] . "</td>";
-            echo insertCell($row["age"]);
-            echo "</tr>";
-            
-            $limit += 1;
-        }
-        echo "</table>";
-        }
-    }
-    
+        
     function GetLeaderBoard()
     {
         $conn = EstablishConnection();
         $sql = "SELECT * FROM people ORDER BY accuracy DESC, time LIMIT 0, 10 ";
         $result = $conn->query($sql);
         
-        if ($result->num_rows > 0)
+        return $result;
+    }
+    
+    function RenderLeaderboard()
+    {
+        $leaderboard = GetLeaderBoard();
+        if ($leaderboard->num_rows > 0)
         {
             echo "<table class='table table-striped table-bordered'>";
             echo "<thead>";
@@ -50,7 +30,7 @@
             echo "<tbody>";
             // output data for each row
             $limit = 0;
-            while($row = $result->fetch_assoc())
+            while($row = $leaderboard->fetch_assoc())
             {
                 $cells = array(($limit + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $row["time"]);
                 InsertRow($cells);
