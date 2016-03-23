@@ -12,5 +12,5 @@ Link: <a href="https://github.com/encrypt0r/nergiz-quiz">https://github.com/encr
     <li class="list-group-item">Git and GitHub.com</li>
     <li class="list-group-item">Microsoft Visual Studio Code</li>
     <li class="list-group-item">Bootstrap</li>
-    <li class="list-group-item">Languages: C#, PHP, SQL, HTML, CSS and Javascript</li>
+    <li class="list-group-item">Languages: C#, PHP, SQL, HTML, CSS and JS</li>
 </ul>
