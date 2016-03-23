@@ -1,4 +1,19 @@
-<?php 
+<?php
+    /*
+    * Inserts a new person into the leaderboard and returns its id and rank
+    */
+    function InsertNewPersonIntoDatabase($name, $time, $accuracy)
+    {
+        $conn = EstablishConnection();
+        $sql = "INSERT INTO people (name, time, accuracy) VALUES ('" . $name . "'," . $time . ", " . $accuracy . ")";
+        
+        if ($conn->query($sql) == TRUE)
+            return "SUCCESS";
+        else 
+            return "ERROR: " . $sql . "<br>" . $conn->error;;
+            
+       $conn->close();
+    } 
     /*
     * Renders a part of a page, e.g: header and footer
     */
@@ -52,7 +67,7 @@
     }
     
     /*
-    * establishes a connection with the database and returns the connection as an object.
+    * Establishes a connection with the database and returns the connection as an object.
     */
     function EstablishConnection()
     {
@@ -77,7 +92,7 @@
         
         echo "<tr>";
         foreach ($cells as $cell) {
-            echo "<td>" . $data . "</td>";
+            echo "<td>" . $cell . "</td>";
         }
         echo "</tr>";
     }
