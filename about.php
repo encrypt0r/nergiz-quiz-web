@@ -8,9 +8,7 @@ Made with <span class="glyphicon glyphicon-heart red"></span> in Kurdistan</p>
 Link: <a href="https://github.com/encrypt0r/nergiz-quiz">https://github.com/encrypt0r/nergiz-quiz</a>
 <h3>What's used in this project</h3>
 <ul class="list-group">
-    <li class="list-group-item">Microsoft Visual Studio 2015 Community Edition</li>
-    <li class="list-group-item">Git and GitHub.com</li>
-    <li class="list-group-item">Microsoft Visual Studio Code</li>
-    <li class="list-group-item">Bootstrap</li>
-    <li class="list-group-item">Languages: C#, PHP, SQL, HTML, CSS and JS</li>
+    <li class="list-group-item">Languages: C#, PHP, SQL, XAML, HTML and CSS</li>
+    <li class="list-group-item">Platforms: .NET, WPF and Bootstrap</li>    
+    <li class="list-group-item">Tools: Visual Studio, GitHub, Visual Studio Code and Firefox</li>
 </ul>

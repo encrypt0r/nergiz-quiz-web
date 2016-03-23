@@ -13,7 +13,19 @@
             return "ERROR: " . $sql . "<br>" . $conn->error;;
             
        $conn->close();
-    } 
+    }
+    
+    function RemovePersonFromDatabase($id)
+    {
+        $conn = EstablishConnection();
+        $sql = "DELETE FROM people WHERE id = " . $id;
+        
+        if ($conn->query($sql) == TRUE)
+            return "SUCCESS";
+        else 
+            return "ERROR: " . $sql . "<br>" . $conn->error;;
+    }
+     
     /*
     * Renders a part of a page, e.g: header and footer
     */
@@ -37,6 +49,7 @@
             $sql = "SELECT * FROM people ORDER BY accuracy DESC, time LIMIT 0, " . $num;
         $result = $conn->query($sql);
         
+        $conn->close();
         return $result;
     }
     
@@ -59,17 +72,17 @@
             echo "</thead>";
             echo "<tbody>";
             // output data for each row
-            $limit = 0;
+            $order = 0;
             while($row = $leaderboard->fetch_assoc())
             {
                 $timeProcessed = GetTimeInHumanLanguage($row["time"]);
                 if ($writeID)
-                    $cells = array(($limit + 1), $row["id"] , $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                    $cells = array(($order + 1), $row["id"] , $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
                 else
-                    $cells = array(($limit + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                    $cells = array(($order + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
                 InsertRow($cells);
 
-                $limit += 1;
+                $order += 1;
             }
             echo "</tbody>";
             echo "</table>";
