@@ -25,12 +25,16 @@
     }
     
     /*
-    * Queries the database for top-10 participants and returns an array of them.
+    * Queries the database for top $num participants and returns an array of them.
+    * To get all of the participants, enter -1 form $num
     */    
-    function GetLeaderBoard()
+    function GetLeaderBoard($num)
     {
         $conn = EstablishConnection();
-        $sql = "SELECT * FROM people ORDER BY accuracy DESC, time LIMIT 0, 10 ";
+        if ($num == -1)
+            $sql = "SELECT * FROM people ORDER BY accuracy DESC, time";
+        else       
+            $sql = "SELECT * FROM people ORDER BY accuracy DESC, time LIMIT 0, " . $num;
         $result = $conn->query($sql);
         
         return $result;
@@ -39,15 +43,18 @@
     /*
     * Renders the leaderboard as an html table.
     */
-    function RenderLeaderboard()
+    function RenderLeaderboard($num, $writeID = FALSE)
     {
-        $leaderboard = GetLeaderBoard();
+        $leaderboard = GetLeaderBoard($num);
         if ($leaderboard->num_rows > 0)
         {
             echo "<table class='table table-striped table-bordered'>";
             echo "<thead>";
             echo "<tr>";
-            echo "<th>#</td><th>Name</td><th>Accuracy</th><th>Time</th>";
+            echo "<th>#</th>";
+            if ($writeID)
+                echo "<th>ID</th>";
+            echo "<th>Name</th><th>Accuracy</th><th>Time</th>";
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
@@ -56,7 +63,10 @@
             while($row = $leaderboard->fetch_assoc())
             {
                 $timeProcessed = GetTimeInHumanLanguage($row["time"]);
-                $cells = array(($limit + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                if ($writeID)
+                    $cells = array(($limit + 1), $row["id"] , $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                else
+                    $cells = array(($limit + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
                 InsertRow($cells);
 
                 $limit += 1;

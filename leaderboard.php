@@ -3,5 +3,5 @@
 </div>
 <?php 
     require_once("includes/helper.php");
-    RenderLeaderboard();
+    RenderLeaderboard(10);
 ?>
