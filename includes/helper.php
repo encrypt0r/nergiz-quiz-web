@@ -6,9 +6,26 @@
     {
         $conn = EstablishConnection();
         $sql = "INSERT INTO people (name, time, accuracy) VALUES ('" . $name . "'," . $time . ", " . $accuracy . ")";
-        
+        $rank = -1;
+        $id = -1;
         if ($conn->query($sql) == TRUE)
-            return "SUCCESS";
+        {
+            $leaderboard = GetLeaderBoard(-1);
+            $order = 1;
+            while ($row = $leaderboard->fetch_assoc())
+            {
+                if ($row["name"] === $name && $row["accuracy"] === $accuracy && $row["time"] === $time)
+                {
+                    $rank = $order;
+                    $id = $row["id"];
+                    break;
+                }
+                
+                $order++;
+            }
+            
+            return $rank . ";" . $id;
+        }
         else 
             return "ERROR: " . $sql . "<br>" . $conn->error;;
             
