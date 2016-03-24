@@ -1,5 +1,5 @@
 <?php require("../includes/helper.php") ?>
-<?php RenderPart("header", array("title" => "Home | Nergi Quiz")); ?>
+<?php RenderPart("header", array("title" => "Mission Control | Nergi Quiz")); ?>
 <h1>Mission Control</h1>
 <div class="row">
 

@@ -1,11 +1,14 @@
 <?php
     /*
-    * Inserts a new person into the leaderboard and returns its id and rank
+    * Inserts a new person into the leaderboard and returns its rank and id
     */
     function InsertNewPersonIntoDatabase($name, $time, $accuracy)
     {
+        // insert person into database
         $conn = EstablishConnection();
         $sql = "INSERT INTO people (name, time, accuracy) VALUES ('" . $name . "'," . $time . ", " . $accuracy . ")";
+        
+        // get his rank and id
         $rank = -1;
         $id = -1;
         if ($conn->query($sql) == TRUE)
