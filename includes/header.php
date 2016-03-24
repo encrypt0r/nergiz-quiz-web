@@ -31,7 +31,7 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="<?= $siteURL; ?>">Nergiz Quiz</a>
         </div>
-           <p class="navbar-text navbar-right">Made with <span class="glyphicon glyphicon-heart red"></span> in Kurdistan.</p></p>
+           <p class="navbar-text navbar-right">Made with <span class="glyphicon glyphicon-heart red"></span> in Kurdistan</p></p>
       </div>
     </nav>
     

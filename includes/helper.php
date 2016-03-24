@@ -2,11 +2,13 @@
     /*
     * Inserts a new person into the leaderboard and returns its rank and id
     */
-    function InsertNewPersonIntoDatabase($name, $time, $accuracy)
+    function InsertNewPersonIntoDatabase($name, $time, $accuracy, $age, $gender)
     {
         // insert person into database
         $conn = EstablishConnection();
-        $sql = "INSERT INTO people (name, time, accuracy) VALUES ('" . $name . "'," . $time . ", " . $accuracy . ")";
+        $sql = "INSERT INTO people
+                (name, time, accuracy, age, isMale) VALUES 
+                ('" . $name . "'," . $time . ", " . $accuracy . ", " . $age . ", " . $gender . ")";
         
         // get his rank and id
         $rank = -1;
@@ -27,7 +29,7 @@
                 $order++;
             }
             
-            return $rank . ";" . $id;
+            return $rank . "#" . GetLeaderboardForAPI();
         }
         else 
             return "ERROR: " . $sql . "<br>" . $conn->error;;
@@ -35,6 +37,29 @@
        $conn->close();
     }
     
+    function GetLeaderboardForAPI()
+    {
+        $leaderboard = GetLeaderBoard(10);
+        $xml = "";
+        $order = 1;
+        while($row = $leaderboard->fetch_assoc())
+        {
+            // the order of the values is very important for the client application.
+            // the client expects this order: rank, name, accuracy, time
+            // any change in the order causes big problems
+            $xml .= $order;
+            $xml .= "," . $row["name"];
+            $xml .= "," . $row["accuracy"];
+            $xml .= "," . $row["time"];
+            $xml .= "|";
+            $order++;
+        }
+        
+        return $xml;
+    }
+    /*
+    * Removes a person with the specified id from the database
+    */
     function RemovePersonFromDatabase($id)
     {
         $conn = EstablishConnection();

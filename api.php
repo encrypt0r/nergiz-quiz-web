@@ -6,9 +6,11 @@ $name = $_POST["name"];
 $password = $_POST["password"];
 $time = $_POST["time"];
 $accuracy = $_POST["accuracy"];
+$gender = $_POST["gender"];
+$age = $_POST["age"];
 
 if ($operation == "insert")
-    echo InsertNewPersonIntoDatabase($name, $time, $accuracy);
+    echo InsertNewPersonIntoDatabase($name, $time, $accuracy, $age, $gender);
 else if ($operation == "remove")
     echo RemovePersonFromDatabase($id);
 else
