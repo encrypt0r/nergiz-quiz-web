@@ -1,6 +1,8 @@
 <?php
     /*
-    * Inserts a new person into the leaderboard and returns its rank and id
+    * Inserts a new person into the leaderboard and returns its rank
+    * and the number of participants and the leaderboard at current 
+    * time.
     */
     function InsertNewPersonIntoDatabase($name, $time, $accuracy, $age, $gender)
     {
@@ -10,26 +12,24 @@
                 (name, time, accuracy, age, isMale) VALUES 
                 ('" . $name . "'," . $time . ", " . $accuracy . ", " . $age . ", " . $gender . ")";
         
-        // get his rank and id
+        // get his rank
         $rank = -1;
-        $id = -1;
         if ($conn->query($sql) == TRUE)
         {
             $leaderboard = GetLeaderBoard(-1);
-            $order = 1;
+            
+            $number = 1;
             while ($row = $leaderboard->fetch_assoc())
             {
                 if ($row["name"] === $name && $row["accuracy"] === $accuracy && $row["time"] === $time)
                 {
-                    $rank = $order;
+                    $rank = $number;
                     $id = $row["id"];
-                    break;
                 }
                 
-                $order++;
+                $number++;
             }
-            
-            return $rank . "#" . GetLeaderboardForAPI();
+            return $rank . "#" . ($number - 1) . "#" . GetLeaderboardForAPI();
         }
         else 
             return "ERROR: " . $sql . "<br>" . $conn->error;;
@@ -37,22 +37,25 @@
        $conn->close();
     }
     
+    /*
+    * Returns the leaderboard in a way that the client app understands
+    */
     function GetLeaderboardForAPI()
     {
         $leaderboard = GetLeaderBoard(10);
         $xml = "";
-        $order = 1;
+        $number = 1;
         while($row = $leaderboard->fetch_assoc())
         {
             // the order of the values is very important for the client application.
-            // the client expects this order: rank, name, accuracy, time
+            // the client app expects this order: rank, name, accuracy, time
             // any change in the order causes big problems
-            $xml .= $order;
+            $xml .= $number;
             $xml .= "," . $row["name"];
             $xml .= "," . $row["accuracy"];
             $xml .= "," . $row["time"];
             $xml .= "|";
-            $order++;
+            $number++;
         }
         
         return $xml;
@@ -89,9 +92,9 @@
     {
         $conn = EstablishConnection();
         if ($num == -1)
-            $sql = "SELECT * FROM people ORDER BY accuracy DESC, time";
+            $sql = "SELECT * FROM people ORDER BY accuracy DESC, time, register_date";
         else       
-            $sql = "SELECT * FROM people ORDER BY accuracy DESC, time LIMIT 0, " . $num;
+            $sql = "SELECT * FROM people ORDER BY accuracy DESC, time, register_date LIMIT 0, " . $num;
         $result = $conn->query($sql);
         
         $conn->close();
@@ -117,17 +120,17 @@
             echo "</thead>";
             echo "<tbody>";
             // output data for each row
-            $order = 0;
+            $number = 0;
             while($row = $leaderboard->fetch_assoc())
             {
                 $timeProcessed = GetTimeInHumanLanguage($row["time"]);
                 if ($writeID)
-                    $cells = array(($order + 1), $row["id"] , $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                    $cells = array(($number + 1), $row["id"] , $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
                 else
-                    $cells = array(($order + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                    $cells = array(($number + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
                 InsertRow($cells);
 
-                $order += 1;
+                $number += 1;
             }
             echo "</tbody>";
             echo "</table>";
