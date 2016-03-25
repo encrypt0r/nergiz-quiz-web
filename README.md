@@ -1,4 +1,4 @@
-# nergiz-quiz-web
+# Nergiz Quiz Web App
 The server-side app of [nergiz-quiz](https://github.com/encrypt0r/nergiz-quiz "nergiz-quiz").
 
 # Licence
