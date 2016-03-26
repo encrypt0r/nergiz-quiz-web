@@ -19,12 +19,12 @@
             $leaderboard = GetLeaderBoard(-1);
             
             $number = 1;
+            
             while ($row = $leaderboard->fetch_assoc())
             {
-                if ($row["name"] === $name && $row["accuracy"] === $accuracy && $row["time"] === $time)
+                if ($row["name"] == $name && $row["accuracy"] == $accuracy && $row["time"] == $time)
                 {
                     $rank = $number;
-                    $id = $row["id"];
                 }
                 
                 $number++;
