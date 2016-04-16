@@ -1,4 +1,4 @@
-<?php 
+<?php
 require("includes/helper.php");
 $operation = $_POST["operation"];
 $id = $_POST["id"];
@@ -15,4 +15,5 @@ else if ($operation == "remove")
     echo RemovePersonFromDatabase($id);
 else
     echo "Error: Unknown operation.";
+    
 ?>

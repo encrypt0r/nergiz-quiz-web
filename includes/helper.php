@@ -1,7 +1,7 @@
 <?php
     /*
     * Inserts a new person into the leaderboard and returns its rank
-    * and the number of participants and the leaderboard at current 
+    * and the number of participants and the leaderboard at current
     * time.
     */
     function InsertNewPersonIntoDatabase($name, $time, $accuracy, $age, $gender)
@@ -9,41 +9,41 @@
         // insert person into database
         $conn = EstablishConnection();
         $sql = "INSERT INTO people
-                (name, time, accuracy, age, isMale) VALUES 
+                (name, time, accuracy, age, isMale) VALUES
                 ('" . $name . "'," . $time . ", " . $accuracy . ", " . $age . ", " . $gender . ")";
-        
+
         // get his rank
         $rank = -1;
         if ($conn->query($sql) == TRUE)
         {
             $leaderboard = GetLeaderBoard(-1);
-            
+
             $number = 1;
-            
+
             while ($row = $leaderboard->fetch_assoc())
             {
                 if ($row["name"] == $name && $row["accuracy"] == $accuracy && $row["time"] == $time)
                 {
                     $rank = $number;
                 }
-                
+
                 $number++;
             }
             return $rank . "#" . ($number - 1) . "#" . GetLeaderboardForAPI();
         }
-        else 
+        else
             return "ERROR: " . $sql . "<br>" . $conn->error;;
-            
+
        $conn->close();
     }
-    
+
     /*
     * Returns the leaderboard in a way that the client app understands
     */
     function GetLeaderboardForAPI()
     {
         $leaderboard = GetLeaderBoard(10);
-        $xml = "";
+        $data = "";
         $number = 1;
         while($row = $leaderboard->fetch_assoc())
         {
@@ -57,8 +57,8 @@
             $xml .= "|";
             $number++;
         }
-        
-        return $xml;
+
+        return $data;
     }
     /*
     * Removes a person with the specified id from the database
@@ -67,13 +67,13 @@
     {
         $conn = EstablishConnection();
         $sql = "DELETE FROM people WHERE id = " . $id;
-        
+
         if ($conn->query($sql) == TRUE)
-            return "SUCCESS";
-        else 
+            return "person with ID:" . $id . " removed from database.";
+        else
             return "ERROR: " . $sql . "<br>" . $conn->error;;
     }
-     
+
     /*
     * Renders a part of a page, e.g: header and footer
     */
@@ -83,24 +83,24 @@
         extract($data);
         require($part . ".php");
     }
-    
+
     /*
     * Queries the database for top $num participants and returns an array of them.
     * To get all of the participants, enter -1 form $num
-    */    
+    */
     function GetLeaderBoard($num)
     {
         $conn = EstablishConnection();
         if ($num == -1)
             $sql = "SELECT * FROM people ORDER BY accuracy DESC, time, register_date";
-        else       
+        else
             $sql = "SELECT * FROM people ORDER BY accuracy DESC, time, register_date LIMIT 0, " . $num;
         $result = $conn->query($sql);
-        
+
         $conn->close();
         return $result;
     }
-    
+
     /*
     * Renders the leaderboard as an html table.
     */
@@ -125,9 +125,9 @@
             {
                 $timeProcessed = GetTimeInHumanLanguage($row["time"]);
                 if ($writeID)
-                    $cells = array(($number + 1), $row["id"] , $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                    $cells = array(($number + 1), $row["id"] , $row["name"], round(($row["accuracy"] * 100), 1) . "%", $timeProcessed);
                 else
-                    $cells = array(($number + 1), $row["name"], ($row["accuracy"] * 100 . "%"), $timeProcessed);
+                    $cells = array(($number + 1), $row["name"], round(($row["accuracy"] * 100), 1) . "%", $timeProcessed);
                 InsertRow($cells);
 
                 $number += 1;
@@ -136,46 +136,46 @@
             echo "</table>";
         }
     }
-    
+
     /*
     * Establishes a connection with the database and returns the connection as an object.
     */
     function EstablishConnection()
     {
         require("config.php");
-        // create connection 
+        // create connection
         $conn = new mysqli($serverName, $userName, $password, $dbName);
-        
-        // check connection 
+
+        // check connection
         if ($conn->connect_error)
         {
             die("Connection failed: " . $conn->connect_error);
         }
-        
+
         return $conn;
     }
-    
+
     /*
     * Inserts a row into a table, used by RenderLeaderboard()
     */
     function InsertRow($cells = array())
     {
-        
+
         echo "<tr>";
         foreach ($cells as $cell) {
             echo "<td>" . $cell . "</td>";
         }
         echo "</tr>";
     }
-    
+
     /*
     * Changes time from integer (number of seconds) to a more human-friendly format
-    */    
+    */
     function GetTimeInHumanLanguage($seconds)
     {
         $minutes = floor(($seconds / 60));
         $remSeconds = $seconds - ($minutes * 60);
-        
+
         $time = "";
         if ($minutes > 0)
         {
@@ -186,10 +186,10 @@
         {
             $time .= $remSeconds . " Second" . MakeItPlural($remSeconds);
         }
-        
+
         return $time;
     }
-    
+
     /*
     * Decides wether a noun thats after a number (e.g: 10 persons) needs to plural or singular
     */
@@ -197,7 +197,7 @@
     {
         if ($num == 1)
             return "";
-        else 
+        else
             return "s";
     }
 ?>
