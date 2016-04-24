@@ -51,7 +51,10 @@ function ProcessPost()
   }
   else
     $value = "Invalid action";
-
+  
+  if (!isset($_POST["password"]) || isset($_POST["password"]) != "HowAreYou?")
+    $value = "Invalid Password.";
+    
   return $value;
 }
 
@@ -71,6 +74,8 @@ function ProcessGet()
     }
   }
 
+  if (!isset($_GET["password"]) || isset($_GET["password"]) != "HowAreYou?")
+    $value = "Invalid Password.";
   return $value;
 }
 

@@ -1,5 +1,5 @@
 <?php
-    /*
+   /*
     * Inserts a new person into the leaderboard and returns its rank
     * and the number of participants and the leaderboard at current
     * time.
@@ -12,21 +12,18 @@
                 (name, time, accuracy, age, isMale) VALUES
                 ('" . $name . "'," . $time . ", " . $accuracy . ", " . $age . ", " . $gender . ")";
 
-        // get his rank
-        $rank = -1;
         if ($conn->query($sql) == TRUE)
         {
             $leaderboard = GetLeaderBoard(-1);
 
             $number = 1;
-
+            $rank = -1;
             while ($row = $leaderboard->fetch_assoc())
             {
-                if ($row["name"] == $name && $row["accuracy"] == $accuracy && $row["time"] == $time)
-                {
+                $condition = ($row["name"] == $name && round($row["accuracy"], 1) == round($accuracy, 1) && $row["time"] == $time);
+                if ($condition)
                     $rank = $number;
-                }
-
+                    
                 $number++;
             }
             return $rank . "#" . ($number - 1) . "#" . GetLeaderboardForAPI();
@@ -37,7 +34,7 @@
        $conn->close();
     }
 
-    /*
+   /*
     * Returns the leaderboard in a way that the client app understands
     */
     function GetLeaderboardForAPI()
@@ -50,17 +47,17 @@
             // the order of the values is very important for the client application.
             // the client app expects this order: rank, name, accuracy, time
             // any change in the order causes big problems
-            $xml .= $number;
-            $xml .= "," . $row["name"];
-            $xml .= "," . $row["accuracy"];
-            $xml .= "," . $row["time"];
-            $xml .= "|";
+            $data .= $number;
+            $data .= "," . $row["name"];
+            $data .= "," . $row["accuracy"];
+            $data .= "," . $row["time"];
+            $data .= "|";
             $number++;
         }
 
         return $data;
     }
-    /*
+   /*
     * Removes a person with the specified id from the database
     */
     function RemovePersonFromDatabase($id)
@@ -74,7 +71,7 @@
             return "ERROR: " . $sql . "<br>" . $conn->error;;
     }
 
-    /*
+   /*
     * Renders a part of a page, e.g: header and footer
     */
     function RenderPart($part, $data = array())
@@ -84,7 +81,7 @@
         require($part . ".php");
     }
 
-    /*
+   /*
     * Queries the database for top $num participants and returns an array of them.
     * To get all of the participants, enter -1 form $num
     */
@@ -101,13 +98,47 @@
         return $result;
     }
 
-    /*
-    * Renders the leaderboard as an html table.
+   /*
+    * Queries the database for top $num participants and returns an array of them.
+    * To get all of the participants, enter -1 form $num
+    */
+    function GetLatestParticipants($num)
+    {
+        $conn = EstablishConnection();
+        if ($num == -1)
+            $sql = "SELECT * FROM people ORDER BY register_date DESC";
+        else
+            $sql = "SELECT * FROM people ORDER BY register_date DESC LIMIT 0, " . $num;
+        $result = $conn->query($sql);
+
+        $conn->close();
+        return $result;
+    }
+    
+   /*
+    * Lists the top participants in an HTML table
     */
     function RenderLeaderboard($num, $writeID = FALSE)
     {
         $leaderboard = GetLeaderBoard($num);
-        if ($leaderboard->num_rows > 0)
+        RenderHTMLTable($leaderboard);
+    }
+    
+   /*
+    * Lists the latest participants in an HTML table
+    */
+    function RenderLatest($num, $writeID = FALSE)
+    {
+        $leaderboard = GetLatestParticipants($num);
+        RenderHTMLTable($leaderboard, $writeID);
+    }
+    
+   /*
+    * Creates an HTML table out of an array object
+    */
+    function RenderHTMLTable($theArray, $writeID = FALSE)
+    {
+        if ($theArray->num_rows > 0)
         {
             echo "<table class='table table-striped table-bordered'>";
             echo "<thead>";
@@ -121,7 +152,7 @@
             echo "<tbody>";
             // output data for each row
             $number = 0;
-            while($row = $leaderboard->fetch_assoc())
+            while($row = $theArray->fetch_assoc())
             {
                 $timeProcessed = GetTimeInHumanLanguage($row["time"]);
                 if ($writeID)
@@ -136,8 +167,8 @@
             echo "</table>";
         }
     }
-
-    /*
+    
+   /*
     * Establishes a connection with the database and returns the connection as an object.
     */
     function EstablishConnection()
@@ -155,7 +186,7 @@
         return $conn;
     }
 
-    /*
+   /*
     * Inserts a row into a table, used by RenderLeaderboard()
     */
     function InsertRow($cells = array())
@@ -168,7 +199,7 @@
         echo "</tr>";
     }
 
-    /*
+   /*
     * Changes time from integer (number of seconds) to a more human-friendly format
     */
     function GetTimeInHumanLanguage($seconds)
@@ -190,7 +221,7 @@
         return $time;
     }
 
-    /*
+   /*
     * Decides wether a noun thats after a number (e.g: 10 persons) needs to plural or singular
     */
     function MakeItPlural($num)
