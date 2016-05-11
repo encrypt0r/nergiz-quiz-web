@@ -31,6 +31,13 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="<?= $siteURL; ?>">Nergiz Quiz</a>
         </div>
+<div class="nav navbar-nav">
+			<ul class="nav navbar-nav">
+				<li><a href="<?= $siteURL; ?>">Leaderboard</a></li>
+				<li><a href="all.php">All participants</a></li> 
+				<li><a href="https://github.com/encrypt0r/nergiz-quiz/releases/latest">Download App</a></li> 
+			</ul>
+		</div>
            <p class="navbar-text navbar-right">Made with <span class="glyphicon glyphicon-heart red"></span> in Kurdistan</p></p>
       </div>
     </nav>

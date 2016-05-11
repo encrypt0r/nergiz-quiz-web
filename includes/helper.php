@@ -121,7 +121,7 @@
     function RenderLeaderboard($num, $writeID = FALSE)
     {
         $leaderboard = GetLeaderBoard($num);
-        RenderHTMLTable($leaderboard);
+        RenderHTMLTable($leaderboard, $writeID);
     }
     
    /*

@@ -1,10 +1,10 @@
 <?php
     // the base url of the site
-    $siteURL = "http://localhost/nergiz-quiz-web/";
+    $siteURL = "http://nergiz-quiz.ueuo.com";
 
     // database Access Information
     $serverName = "localhost"; // usally it's localhost, no need to touch that
-    $userName = "root";
-    $password = "";
-    $dbName = "nergiz";
+    $userName = "949530";
+    $password = "7783982a";
+    $dbName = "949530";
 ?>
